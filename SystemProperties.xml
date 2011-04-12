@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Server Informations" description="Shows System Informations">
+  <Require feature="dynamic-height"/>
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[ 
+    
+    <script language="javascript" type="text/javascript" src="scripts/jquery-1.5.1.min.js"></script>  
+    <script>
+      
+      function printInfo(result) {
+        var htmlResponse= [];
+        if (result.status == "OK") {
+          var data = result.data;
+          htmlResponse.push("<tr>");
+          $.each(data, function(index, value) { 
+            htmlResponse.push('<tr><td>'+ index + '</td><td>' + value + '</td></tr>');
+          });
+          htmlResponse.push("</tr>");
+          $('#systemInfo').height(200);
+        } 
+        else {
+          htmlResponse.push("Not permitted");
+          $('#systemInfo').height(50);
+        }
+        $('#systemInfo').html(htmlResponse.join(''));
+        gadgets.window.adjustHeight( $('#sysInfoContainer').outerHeight()  );
+        
+      }
+      
+      function loadInformationFromServer() {
+        $.getJSON('/rest/private/system/information', function(result){ printInfo(result);   } );
+      }      
+      
+      function init() {
+        loadInformationFromServer();
+      }
+      
+      gadgets.util.registerOnLoadHandler(init);
+    </script>
+    
+    
+ 
+    
+    <div id="sysInfoContainer" style="margin-left: 4px; margin-right: 4px; ">
+      <h3>System Informations</h3>
+      <div id="systemInfo" style="border: solid 1px #cccccc; font-size:11px; overflow : auto; width:100% ">
+        Loading...<br>
+      </div>
+    </div>
+    
+    
+    
+    ]]></Content></Module>
